@@ -15,6 +15,9 @@ spec:
         app: todo-api
 
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+
       containers:
         - name: todo-api
           image: ghcr.io/projets-sdv/todo-api:43d614f
@@ -44,9 +47,7 @@ spec:
         - setWeight: 25
         - pause:
             duration: 30s
-
         - setWeight: 50
         - pause:
             duration: 30s
-
         - setWeight: 100
