@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: todo-api
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: todo-api
+
+  template:
+    metadata:
+      labels:
+        app: todo-api
+
+    spec:
+      containers:
+        - name: todo-api
+          image: ghcr.io/projets-sdv/todo-api:43d614f
+
+          ports:
+            - containerPort: 8000
+
+          envFrom:
+            - configMapRef:
+                name: todo-api-config
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+
+  strategy:
+    canary:
+      steps:
+        - setWeight: 25
+        - pause:
+            duration: 30s
+
+        - setWeight: 50
+        - pause:
+            duration: 30s
+
+        - setWeight: 100
