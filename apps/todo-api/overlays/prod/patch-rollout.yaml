@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: todo-api
+spec:
+  replicas: 3
+  strategy:
+    canary:
+      steps:
+        - setWeight: 10
+        - pause:
+            duration: 60s
+        - setWeight: 50
+        - pause:
+            duration: 120s
+        - setWeight: 100
