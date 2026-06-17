@@ -5,28 +5,20 @@ metadata:
   namespace: infra-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
-  name: tf-runner-cluster-role
+  name: tf-runner-role
+  namespace: infra-system
 rules:
   - apiGroups: [""]
-    resources:
-      - namespaces
-      - configmaps
-      - serviceaccounts
-      - resourcequotas
-      - limitranges
+    resources: ["secrets", "configmaps", "pods", "pods/log"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: tf-runner-cluster-rolebinding
-subjects:
-  - kind: ServiceAccount
-    name: tf-runner
-    namespace: infra-system
-roleRef:
-  kind: ClusterRole
-  name: tf-runner-cluster-role
-  apiGroup: rbac.authorization.k8s.io
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
