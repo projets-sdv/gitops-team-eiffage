@@ -1,0 +1,14 @@
+apiVersion: infra.contrib.fluxcd.io/v1alpha2
+kind: Terraform
+metadata:
+  name: todo-api-kubernetes-infra
+  namespace: infra-system
+spec:
+  interval: 1m
+  approvePlan: auto
+  path: ./infrastructure/terraform/kubernetes
+  serviceAccountName: tf-runner
+  sourceRef:
+    kind: GitRepository
+    name: gitops-team-eiffage
+    namespace: infra-system
